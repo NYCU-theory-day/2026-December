@@ -6,7 +6,7 @@ This repository contains the official website for **NYCU Theory Day – April 20
 
 ### Main (Production)
 Official public website:  
-https://nycu-theory-day.github.io/2026-December/
+https://nycu-theory-day.github.io/2026-April/
 
 ### Dev (Preview)
 Development and review version:  
