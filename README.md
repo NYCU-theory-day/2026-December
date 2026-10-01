@@ -1,59 +1,79 @@
 # NYCU Theory Day 2026 Website
 
-This repository contains the official website for **NYCU Theory Day – April 2026**, including both the production site and a development preview.
+This repository contains the static website for NYCU Theory Day 2026. The goal is to keep most content editable in data files rather than hard-coded in HTML or JavaScript.
 
-## 🌐 Live Websites
+## Data source of truth
 
-### Main (Production)
-Official public website:  
-https://nycu-theory-day.github.io/2026-April/
+Use these files as the primary content sources:
 
-### Dev (Preview)
-Development and review version:  
-https://nycutheorydaydev.netlify.app
+- `data/Theoryday_2026_DEC.csv` contains speaker profile data: speaker name, category, email, affiliation, title, expertise, talk title, abstract, and the talk date/time. This is the main data source for the speaker pages and speaker lists.
+- `data/schedule.csv` contains schedule-only rows: day, date, time, type, session title, and presenter/organizer labels. This file is the source of truth for all session timings and dates.
+- `data/site-content.json` contains reusable text like About, event information, organizer lists, sponsor acknowledgements, and category labels. Do not rename keys.
 
-> The dev version may include unfinished or experimental features.  
-> Only the main website should be shared publicly.
+### Rules for editing data
 
-## 🖥️ Run Locally (Desktop / VS Code / Codespaces)
+- Keep one speaker per row in `data/Theoryday_2026_DEC.csv`.
+- Use the allowed categories exactly: `keynote`, `plenary`, `others`, and `panel`.
+- Keep the column header row unchanged. If you add a new column, update the site-data parsing logic and validation script.
+- Use relative image paths such as `images/speakers/your-photo.jpg` under the project root.
+- If a field contains commas, quote the entire CSV field and double any internal quotes.
+- Do not duplicate date/time data in the speaker CSV when the schedule CSV already specifies the session timing. The schedule CSV should remain the single source of truth for day/time values.
 
-You can preview the website locally using Python’s built-in HTTP server.
+### CSV example
 
-### Requirement
-- Python 3
+```csv
+Speaker,category,email,image_link,affiliation,title,expertise,talktitle,abstract,talk_date,talk_start_time,talk_end_time
+Jane Smith,keynote,jane@example.edu,images/speakers/jane-smith.jpg,University of X,Professor,"Algorithms / Optimization","A Useful Talk","A short abstract about the talk.",4/21,14:10,15:10
+```
 
-### Command
-Run from the project root(dev for development):
+## Local preview
 
-    python -m http.server
-​
+Use Python’s built-in web server from the project root:
 
-## 🔄 Auto Update (No Ctrl+F5)
+```bash
+python -m http.server
+```
 
-The site now includes client-side cache busting and periodic update checks.
+Then open the site in a browser at `http://localhost:8000`.
 
-- Shared fragments and CSV are requested with no-cache settings.
-- The browser checks `site-version.json` every 2 minutes.
-- If the version changes, the page reloads automatically.
+## Validation before publishing
 
-When you update any website content (e.g., speaker info, schedule, text), also update the value of `version` in `site-version.json`.
+Before pushing or publishing, run:
+
+```bash
+npm run validate:data
+```
+
+This validates:
+
+- required CSV and JSON files exist,
+- speaker categories are valid,
+- image paths resolve to real files,
+- date and time fields are present when expected,
+- schedule rows do not duplicate the same day/time slot,
+- speaker names referenced in the schedule can be matched to the speaker CSV.
+
+## Cache-busting and content updates
+
+When content changes, update the version number in `site-version.json` so the browser refreshes cached assets.
 
 Example:
 
 ```json
 {
-    "version": "2026-04-09-2"
+  "version": "2026-12-01-1"
 }
 ```
 
+## Maintenance tips
 
-## 🚀 Merge & Deployment
+- Keep text edits in `data/site-content.json` instead of editing HTML.
+- Keep speaker facts in `data/Theoryday_2026_DEC.csv` instead of embedding them in JavaScript.
+- Keep schedule slot metadata in `data/schedule.csv` rather than duplicating the same day/time information in multiple places.
+- Keep folder names and image names predictable so photo updates stay easy.
+- Add a readable commit message whenever you change speaker data or event text, so the publication history is easier to audit.
 
-### Merge `dev` into `main`
-When development is ready to go live, merge the `dev` branch into `main`:
+## Deployment
 
+The repository is designed for a simple static deployment. After validating the data and updating the version file, publish the site as usual for the target hosting environment.
 
-    git checkout main
-    git pull origin main
-    git merge dev
-    git push origin main

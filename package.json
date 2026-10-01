@@ -1,0 +1,7 @@
+{
+  "name": "nycu-theory-day-2026",
+  "private": true,
+  "scripts": {
+    "validate:data": "node scripts/validate-data.js"
+  }
+}

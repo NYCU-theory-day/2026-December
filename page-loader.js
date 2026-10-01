@@ -118,11 +118,15 @@
             if (typeof initSpeakers === 'function') {
               try { initSpeakers(); } catch (e) { console.error('initSpeakers error', e); }
             }
+            if (typeof initSiteContent === 'function') {
+              try { initSiteContent(); } catch (e) { console.error('initSiteContent error', e); }
+            }
           }).catch(err => {
             console.error('Error loading scripts from page fragment', err);
             // best-effort: still attempt initialization
             if (typeof initSchedule === 'function') try { initSchedule(); } catch(e){}
             if (typeof initSpeakers === 'function') try { initSpeakers(); } catch(e){}
+            if (typeof initSiteContent === 'function') try { initSiteContent(); } catch(e){}
           });
         }
         
@@ -230,6 +234,9 @@
     }
     if (typeof initSchedule === "function") {
       initSchedule();
+    }
+    if (typeof initSiteContent === "function") {
+      initSiteContent();
     }
   });
 
